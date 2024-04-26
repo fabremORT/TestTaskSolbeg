@@ -5,7 +5,7 @@ function App() {
     const [employees, setEmployees] = useState();
 
     useEffect(() => {
-        populateWeatherData();
+        populateEmployeeData();
     }, []);
 
     const contents = employees === undefined
@@ -14,20 +14,18 @@ function App() {
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
+                    <th>Name</th>
                     <th>Age</th>
                     <th>Sex</th>
                 </tr>
             </thead>
             <tbody>
                 {employees.map(employee =>
-                    <tr key={employee.Id}>
-                        <td>{employee.Id}</td>
-                        <td>{employee.FirstName}</td>
-                        <td>{employee.LastName}</td>
-                        <td>{employee.summary}</td>
-                        <td>{employee.summary}</td>
+                    <tr key={employee.id}>
+                        <td>{employee.id}</td>
+                        <td>{employee.firstName} {employee.lastName}</td>
+                        <td>{employee.age} years</td>
+                        <td>{employee.sex}</td>
                     </tr>
                 )}
             </tbody>
@@ -41,7 +39,7 @@ function App() {
         </div>
     );
     
-    async function populateWeatherData() {
+    async function populateEmployeeData() {
         const response = await fetch('employees/GetEmployees');
         const data = await response.json();
         setEmployees(data);
