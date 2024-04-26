@@ -14,5 +14,14 @@ namespace TestTaskSolbeg.EntityFramework
         {
             base.OnConfiguring(optionsBuilder);
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configure unique constraint for the combination of FirstName and LastName
+            modelBuilder.Entity<Employee>()
+                .HasIndex(e => new { e.FirstName, e.LastName })
+                .IsUnique();
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
