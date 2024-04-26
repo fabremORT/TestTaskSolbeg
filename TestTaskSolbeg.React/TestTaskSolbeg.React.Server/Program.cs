@@ -51,7 +51,6 @@ namespace TestTaskSolbeg.React.Server
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
