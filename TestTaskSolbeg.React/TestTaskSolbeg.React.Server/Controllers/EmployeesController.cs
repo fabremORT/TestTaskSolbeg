@@ -6,8 +6,8 @@ using TestTaskSolbeg.UseCases.Interfaces.Employees;
 
 namespace TestTaskSolbeg.React.Server.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class EmployeesController : ControllerBase
     {
         private readonly ICreateEmployee _createEmployee;
@@ -26,16 +26,19 @@ namespace TestTaskSolbeg.React.Server.Controllers
         }
 
         // GET: employees/GetEmployees
-        [HttpGet("GetEmployees")]
-        public IActionResult GetEmployees()
+        [HttpGet]
+        [Route("GetEmployees")]
+        public IEnumerable<Employee> GetEmployees()
         {
             try
             {
-                return Ok(_getAllEmployees.Execute());
+                var allEmployees = _getAllEmployees.Execute();
+
+                return allEmployees;
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return _getAllEmployees.Execute();
             }
         }
 
