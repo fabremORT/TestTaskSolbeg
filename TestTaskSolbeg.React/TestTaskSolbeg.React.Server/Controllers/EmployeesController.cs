@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TestTaskSolbeg.Entities;
 using TestTaskSolbeg.Entities.Entities;
+using TestTaskSolbeg.UseCases.Interfaces.Employees;
 
 namespace TestTaskSolbeg.React.Server.Controllers
 {
@@ -9,34 +10,58 @@ namespace TestTaskSolbeg.React.Server.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly List<Employee> _employees = new List<Employee>
-    {
-        new Employee { Id = 1, FirstName = "John", LastName = "Doe", Age = 30, Sex = EmployeeSex.MALE },
-        new Employee { Id = 2, FirstName = "Jane", LastName = "Smith", Age = 25, Sex = EmployeeSex.FEMALE }
-    };
+        private readonly ICreateEmployee _createEmployee;
+        private readonly IEditEmployee _editEmployee;
+        private readonly IDeleteEmployees _deleteEmployees;
+        private readonly IGetEmployee _getEmployee;
+        private readonly IGetAllEmployees _getAllEmployees;
+
+        public EmployeesController(ICreateEmployee createEmployee, IEditEmployee editEmployee, IDeleteEmployees deleteEmployees, IGetEmployee getEmployee, IGetAllEmployees getAllEmployees)
+        {
+            _createEmployee = createEmployee;
+            _editEmployee = editEmployee;
+            _deleteEmployees = deleteEmployees;
+            _getEmployee = getEmployee;
+            _getAllEmployees = getAllEmployees;
+        }
 
         // GET: employees/GetEmployees
-        [HttpGet]
-        [Route("GetEmployees")]
+        [HttpGet("GetEmployees")]
         public IActionResult GetEmployees()
         {
-            return Ok(_employees);
+            try
+            {
+                return Ok(_getAllEmployees.Execute());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // GET: employees/GetEmployees/1
         [HttpGet("GetEmployee/{id}")]
         public IActionResult GetEmployee(int id)
         {
-            var employee = _employees.FirstOrDefault(e => e.Id == id);
-            if (employee == null)
+            try
             {
-                return NotFound();
+                var employee = _getEmployee.Execute(id);
+
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(employee);
             }
-            return Ok(employee);
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        // POST: employees
-        [HttpPost]
+        // POST: employees/CreateEmployee
+        [HttpPost("CreateEmployee")]
         public IActionResult CreateEmployee([FromBody] Employee employee)
         {
             if (!ModelState.IsValid)
@@ -44,19 +69,25 @@ namespace TestTaskSolbeg.React.Server.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Assign a unique ID (in a real-world scenario, you'd typically use a database-generated ID)
-            employee.Id = _employees.Count + 1;
+            var newEmployee = new Employee
+            {
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Age = employee.Age,
+                Sex = employee.Sex,
+            };
 
-            _employees.Add(employee);
+            _createEmployee.Execute(newEmployee);
 
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
+            return CreatedAtAction(nameof(GetEmployee), new { id = newEmployee.Id }, newEmployee);
         }
 
-        // PUT: employees/1
-        [HttpPut("{id}")]
+        // PUT: employees/EditEmployee/1
+        [HttpPut("EditEmployee/{id}")]
         public IActionResult UpdateEmployee(int id, [FromBody] Employee updatedEmployee)
         {
-            var employee = _employees.FirstOrDefault(e => e.Id == id);
+            var employee = _getEmployee.Execute(id);
+
             if (employee == null)
             {
                 return NotFound();
@@ -73,20 +104,23 @@ namespace TestTaskSolbeg.React.Server.Controllers
             employee.Age = updatedEmployee.Age;
             employee.Sex = updatedEmployee.Sex;
 
+            _editEmployee.Execute(employee);
+
             return NoContent();
         }
 
-        // DELETE: employees/1
-        [HttpDelete("{id}")]
-        public IActionResult DeleteEmployee(int id)
+        // DELETE: employees/DeleteEmployee/1
+        [HttpDelete("DeleteEmployee/{id}")]
+        public IActionResult DeleteEmployee(IEnumerable<int> ids)
         {
-            var employee = _employees.FirstOrDefault(e => e.Id == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
+            //var employee = _employees.FirstOrDefault(e => e.Id == id);
 
-            _employees.Remove(employee);
+            //if (employee == null)
+            //{
+            //    return NotFound();
+            //}
+
+            _deleteEmployees.Execute(ids);
 
             return NoContent();
         }
