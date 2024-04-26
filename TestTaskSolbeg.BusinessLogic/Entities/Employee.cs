@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using TestTaskSolbeg.Entities.Interfaces.Validation;
 
 namespace TestTaskSolbeg.Entities.Entities
@@ -14,6 +15,7 @@ namespace TestTaskSolbeg.Entities.Entities
         [Range(18, 100, ErrorMessage = "Age must be between 18 and 100.")]
         public int Age { get; set; }
         [Required]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public EmployeeSex Sex { get; set; }
 
         public bool Equals(Employee? other)
