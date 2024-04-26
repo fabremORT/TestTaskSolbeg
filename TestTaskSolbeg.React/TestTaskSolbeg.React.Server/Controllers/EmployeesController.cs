@@ -5,9 +5,9 @@ using TestTaskSolbeg.Entities.Entities;
 
 namespace TestTaskSolbeg.React.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeesController : ControllerBase
     {
         private readonly List<Employee> _employees = new List<Employee>
     {
@@ -15,15 +15,16 @@ namespace TestTaskSolbeg.React.Server.Controllers
         new Employee { Id = 2, FirstName = "Jane", LastName = "Smith", Age = 25, Sex = EmployeeSex.FEMALE }
     };
 
-        // GET: api/employees
+        // GET: employees/GetEmployees
         [HttpGet]
+        [Route("GetEmployees")]
         public IActionResult GetEmployees()
         {
             return Ok(_employees);
         }
 
-        // GET: api/employees/1
-        [HttpGet("{id}")]
+        // GET: employees/GetEmployees/1
+        [HttpGet("GetEmployee/{id}")]
         public IActionResult GetEmployee(int id)
         {
             var employee = _employees.FirstOrDefault(e => e.Id == id);
@@ -34,7 +35,7 @@ namespace TestTaskSolbeg.React.Server.Controllers
             return Ok(employee);
         }
 
-        // POST: api/employees
+        // POST: employees
         [HttpPost]
         public IActionResult CreateEmployee([FromBody] Employee employee)
         {
@@ -51,7 +52,7 @@ namespace TestTaskSolbeg.React.Server.Controllers
             return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
         }
 
-        // PUT: api/employees/1
+        // PUT: employees/1
         [HttpPut("{id}")]
         public IActionResult UpdateEmployee(int id, [FromBody] Employee updatedEmployee)
         {
@@ -75,7 +76,7 @@ namespace TestTaskSolbeg.React.Server.Controllers
             return NoContent();
         }
 
-        // DELETE: api/employees/1
+        // DELETE: employees/1
         [HttpDelete("{id}")]
         public IActionResult DeleteEmployee(int id)
         {
