@@ -1,0 +1,6 @@
+@TestTaskSolbeg.React.Server_HostAddress = http://localhost:5150
+
+GET {{TestTaskSolbeg.React.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
