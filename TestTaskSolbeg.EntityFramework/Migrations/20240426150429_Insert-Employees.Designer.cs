@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestTaskSolbeg.EntityFramework;
 
@@ -10,9 +11,11 @@ using TestTaskSolbeg.EntityFramework;
 namespace TestTaskSolbeg.EntityFramework.Migrations
 {
     [DbContext(typeof(TestTaskDbContext))]
-    partial class TestTaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240426150429_Insert-Employees")]
+    partial class InsertEmployees
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

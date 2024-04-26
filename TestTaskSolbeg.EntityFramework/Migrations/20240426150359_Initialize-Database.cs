@@ -19,7 +19,7 @@ namespace TestTaskSolbeg.EntityFramework.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    Sex = table.Column<int>(type: "int", nullable: false)
+                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

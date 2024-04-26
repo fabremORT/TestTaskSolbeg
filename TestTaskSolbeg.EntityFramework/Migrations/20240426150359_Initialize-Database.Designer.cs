@@ -11,7 +11,7 @@ using TestTaskSolbeg.EntityFramework;
 namespace TestTaskSolbeg.EntityFramework.Migrations
 {
     [DbContext(typeof(TestTaskDbContext))]
-    [Migration("20240426142553_Initialize-Database")]
+    [Migration("20240426150359_Initialize-Database")]
     partial class InitializeDatabase
     {
         /// <inheritdoc />
@@ -43,8 +43,9 @@ namespace TestTaskSolbeg.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Sex")
-                        .HasColumnType("int");
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

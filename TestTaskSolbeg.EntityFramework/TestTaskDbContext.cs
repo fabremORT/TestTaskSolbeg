@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using TestTaskSolbeg.Entities;
 using TestTaskSolbeg.Entities.Entities;
 
 namespace TestTaskSolbeg.EntityFramework
@@ -20,6 +21,12 @@ namespace TestTaskSolbeg.EntityFramework
             modelBuilder.Entity<Employee>()
                 .HasIndex(e => new { e.FirstName, e.LastName })
                 .IsUnique();
+            modelBuilder.Entity<Employee>()
+            .Property(e => e.Sex)
+            .HasConversion(
+                v => v.ToString(),  // Convert enum to string
+                v => (EmployeeSex)Enum.Parse(typeof(EmployeeSex), v) // Convert string to enum
+            );
 
             base.OnModelCreating(modelBuilder);
         }
