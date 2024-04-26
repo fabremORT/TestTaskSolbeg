@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TestTaskSolbeg.Entities\TestTaskSolbeg.Entities.csproj" />
+    <ProjectReference Include="..\..\TestTaskSolbeg.BusinessLogic\TestTaskSolbeg.BusinessLogic.csproj" />
     <ProjectReference Include="..\..\TestTaskSolbeg.EntityFramework\TestTaskSolbeg.EntityFramework.csproj" />
     <ProjectReference Include="..\..\TestTaskSolbeg.UseCases\TestTaskSolbeg.UseCases.csproj" />
     <ProjectReference Include="..\testtasksolbeg.react.client\testtasksolbeg.react.client.esproj">

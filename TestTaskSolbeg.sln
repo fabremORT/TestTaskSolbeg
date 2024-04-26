@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34601.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskSolbeg.Entities", "TestTaskSolbeg.Entities\TestTaskSolbeg.Entities.csproj", "{F90A117C-B8EA-45FB-9230-7117E9003E79}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskSolbeg.EntityFramework", "TestTaskSolbeg.EntityFramework\TestTaskSolbeg.EntityFramework.csproj", "{C12FE238-F7BE-4F1A-A1B3-8FF4C54E1D02}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskSolbeg.UseCases", "TestTaskSolbeg.UseCases\TestTaskSolbeg.UseCases.csproj", "{D5939844-96F8-44C8-BF17-21417BB74917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTaskSolbeg.React.Server", "TestTaskSolbeg.React\TestTaskSolbeg.React.Server\TestTaskSolbeg.React.Server.csproj", "{34495836-7F31-412D-8D1F-A030223183BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskSolbeg.React.Server", "TestTaskSolbeg.React\TestTaskSolbeg.React.Server\TestTaskSolbeg.React.Server.csproj", "{34495836-7F31-412D-8D1F-A030223183BF}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "testtasksolbeg.react.client", "TestTaskSolbeg.React\testtasksolbeg.react.client\testtasksolbeg.react.client.esproj", "{F56F3198-3200-44E4-8E9B-E5E5EB3ECBBE}"
 EndProject
@@ -17,16 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{3D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{98112D30-D761-44B9-8CAF-5AEE47D839C0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskSolbeg.BusinessLogic", "TestTaskSolbeg.BusinessLogic\TestTaskSolbeg.BusinessLogic.csproj", "{EBADEE8E-5DEC-475F-8337-D303D5B38DCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F90A117C-B8EA-45FB-9230-7117E9003E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F90A117C-B8EA-45FB-9230-7117E9003E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F90A117C-B8EA-45FB-9230-7117E9003E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F90A117C-B8EA-45FB-9230-7117E9003E79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C12FE238-F7BE-4F1A-A1B3-8FF4C54E1D02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C12FE238-F7BE-4F1A-A1B3-8FF4C54E1D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C12FE238-F7BE-4F1A-A1B3-8FF4C54E1D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,16 +41,20 @@ Global
 		{F56F3198-3200-44E4-8E9B-E5E5EB3ECBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F56F3198-3200-44E4-8E9B-E5E5EB3ECBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F56F3198-3200-44E4-8E9B-E5E5EB3ECBBE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{EBADEE8E-5DEC-475F-8337-D303D5B38DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBADEE8E-5DEC-475F-8337-D303D5B38DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBADEE8E-5DEC-475F-8337-D303D5B38DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBADEE8E-5DEC-475F-8337-D303D5B38DCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{F90A117C-B8EA-45FB-9230-7117E9003E79} = {98112D30-D761-44B9-8CAF-5AEE47D839C0}
 		{C12FE238-F7BE-4F1A-A1B3-8FF4C54E1D02} = {98112D30-D761-44B9-8CAF-5AEE47D839C0}
 		{D5939844-96F8-44C8-BF17-21417BB74917} = {98112D30-D761-44B9-8CAF-5AEE47D839C0}
 		{34495836-7F31-412D-8D1F-A030223183BF} = {98112D30-D761-44B9-8CAF-5AEE47D839C0}
 		{F56F3198-3200-44E4-8E9B-E5E5EB3ECBBE} = {3D7EDC35-775E-44C8-94F1-4C26135D155C}
+		{EBADEE8E-5DEC-475F-8337-D303D5B38DCB} = {98112D30-D761-44B9-8CAF-5AEE47D839C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0987FF5A-4DF3-4CCE-A5C7-2C4F02BF0857}
