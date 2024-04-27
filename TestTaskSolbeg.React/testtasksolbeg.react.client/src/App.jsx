@@ -69,6 +69,12 @@ const Example = () => {
             {
                 accessorKey: 'age',
                 header: 'Age',
+                Cell: ({ cell }) => (
+                    <>
+                        {cell.getValue()} years
+                    </>
+                )
+                ,
                 mantineEditTextInputProps: {
                     type: 'number',
                     required: true,
@@ -100,22 +106,6 @@ const Example = () => {
                             sex: undefined,
                         }),
                 },
-                //Edit: ({ row, column }) => <Select
-                //    label={column.header}
-                //    required
-                //    value={row.original.sex}
-                //    error={validationErrors?.sex}
-                //    data={[
-                //        { value: 'Male', label: 'Male' },
-                //        { value: 'Female', label: 'Female' },
-                //    ]}
-                //    onFocus={() =>
-                //        setValidationErrors({
-                //            ...validationErrors,
-                //            sex: undefined,
-                //        })
-                //    }
-                ///>,
             },
         ],
         [validationErrors],
@@ -426,3 +416,8 @@ function validateEmployee(employee) {
 
     return errors;
 }
+
+//TODO: multiple delete
+//TODO: scroll table
+//TODO: striped table
+//TODO: last name and first name must be displayed as a single line
