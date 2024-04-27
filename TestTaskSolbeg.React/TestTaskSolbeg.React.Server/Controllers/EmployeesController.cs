@@ -87,7 +87,8 @@ namespace TestTaskSolbeg.React.Server.Controllers
         }
 
         // PUT: employees/EditEmployee/1
-        [HttpPut("EditEmployee/{id}")]
+        [HttpPut]
+        [Route("EditEmployee/{id}")]
         public IActionResult UpdateEmployee(int id, [FromBody] Employee updatedEmployee)
         {
             var employee = _getEmployee.Execute(id);

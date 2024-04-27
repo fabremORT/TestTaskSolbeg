@@ -373,10 +373,19 @@ function useUpdateEmployee() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (employee) => {
-            employee
-            //send api update request here
-            await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-            return Promise.resolve();
+            employee.id = Number(employee.id);
+            employee.age = Number(employee.age)
+            const response = await fetch(`employees/editEmployee/${employee.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employee),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create employee');
+            }
         },
         //client side optimistic update
         onMutate: (newEmployeeInfo) => {
@@ -386,7 +395,7 @@ function useUpdateEmployee() {
                 ),
             );
         },
-        // onSettled: () => queryClient.invalidateQueries({ queryKey: ['employees'] }), //refetch employees after mutation, disabled for demo
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['employees'] }), //refetch employees after mutation
     });
 }
 
@@ -423,7 +432,7 @@ const App = () => (
 
 export default App;
 
-const validateRequired = (value) => !!value.length;
+const validateRequired = (value) => value;
 const validateAgeRange = (value) => value >= 18 && value <= 100;
 
 function validateEmployee(employee) {
