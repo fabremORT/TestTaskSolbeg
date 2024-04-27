@@ -46,13 +46,10 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
+            '^/employees': {
                 target: 'https://localhost:7182/',
-                secure: false
-            },
-            '/employees': {
-                target: 'https://localhost:7182/',
-                secure: false
+                secure: false,
+                //rewrite: (path) => path.replace(/^\/employees/, ''),
             }
         },
         port: 5173,

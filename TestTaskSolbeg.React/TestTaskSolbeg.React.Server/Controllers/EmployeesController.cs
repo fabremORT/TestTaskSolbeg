@@ -64,7 +64,8 @@ namespace TestTaskSolbeg.React.Server.Controllers
         }
 
         // POST: employees/CreateEmployee
-        [HttpPost("CreateEmployee")]
+        [HttpPost]
+        [Route("CreateEmployee")]
         public IActionResult CreateEmployee([FromBody] Employee employee)
         {
             if (!ModelState.IsValid)

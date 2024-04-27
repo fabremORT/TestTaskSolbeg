@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 //import { useEffect, useState } from 'react';
 //import './App.css';
 
@@ -89,10 +90,10 @@ const Example = () => {
                 accessorKey: 'firstName',
                 header: 'First Name',
                 mantineEditTextInputProps: {
-                    type: 'email',
+                    type: 'text',
                     required: true,
                     error: validationErrors?.firstName,
-                    //remove any previous validation errors when user focuses on the input
+                    //remove any previous validation errors when employee focuses on the input
                     onFocus: () =>
                         setValidationErrors({
                             ...validationErrors,
@@ -105,10 +106,10 @@ const Example = () => {
                 accessorKey: 'lastName',
                 header: 'Last Name',
                 mantineEditTextInputProps: {
-                    type: 'email',
+                    type: 'text',
                     required: true,
                     error: validationErrors?.lastName,
-                    //remove any previous validation errors when user focuses on the input
+                    //remove any previous validation errors when employee focuses on the input
                     onFocus: () =>
                         setValidationErrors({
                             ...validationErrors,
@@ -120,81 +121,103 @@ const Example = () => {
                 accessorKey: 'age',
                 header: 'Age',
                 mantineEditTextInputProps: {
-                    type: 'email',
+                    type: 'number',
                     required: true,
-                    error: validationErrors?.email,
-                    //remove any previous validation errors when user focuses on the input
+                    error: validationErrors?.age,
+                    //remove any previous validation errors when employee focuses on the input
                     onFocus: () =>
                         setValidationErrors({
                             ...validationErrors,
-                            email: undefined,
+                            age: undefined,
                         }),
                 },
             },
             {
                 accessorKey: 'sex',
                 header: 'Sex',
-                mantineEditTextInputProps: {
-                    type: 'email',
+                editVariant: 'select',
+                mantineEditSelectProps: {
+                    type: 'select',
                     required: true,
-                    error: validationErrors?.email,
-                    //remove any previous validation errors when user focuses on the input
+                    error: validationErrors?.sex,
+                    data:[
+                        { value: 'Male', label: 'Male' },
+                        { value: 'Female', label: 'Female' },
+                    ],
+                    //remove any previous validation errors when employee focuses on the input
                     onFocus: () =>
                         setValidationErrors({
                             ...validationErrors,
-                            email: undefined,
+                            sex: undefined,
                         }),
                 },
-            }
+                //Edit: ({ row, column }) => <Select
+                //    label={column.header}
+                //    required
+                //    value={row.original.sex}
+                //    error={validationErrors?.sex}
+                //    data={[
+                //        { value: 'Male', label: 'Male' },
+                //        { value: 'Female', label: 'Female' },
+                //    ]}
+                //    onFocus={() =>
+                //        setValidationErrors({
+                //            ...validationErrors,
+                //            sex: undefined,
+                //        })
+                //    }
+                ///>,
+            },
         ],
         [validationErrors],
     );
 
     //call CREATE hook
-    const { mutateAsync: createUser, isLoading: isCreatingUser } =
-        useCreateUser();
+    const { mutateAsync: createEmployee, isLoading: isCreatingEmployee } =
+        useCreateEmployee();
     //call READ hook
     const {
         data: fetchedEmployees = [],
-        isError: isLoadingUsersError,
-        isFetching: isFetchingUsers,
-        isLoading: isLoadingUsers,
+        isError: isLoadingEmployeesError,
+        isFetching: isFetchingEmployees,
+        isLoading: isLoadingEmployees,
     } = useGetEmployees();
     //call UPDATE hook
-    const { mutateAsync: updateUser, isLoading: isUpdatingUser } =
-        useUpdateUser();
+    const { mutateAsync: updateEmployee, isLoading: isUpdatingEmployee } =
+        useUpdateEmployee();
     //call DELETE hook
-    const { mutateAsync: deleteUser, isLoading: isDeletingUser } =
-        useDeleteUser();
+    const { mutateAsync: deleteEmployee, isLoading: isDeletingEmployee } =
+        useDeleteEmployee();
 
     //CREATE action
-    const handleCreateUser = async ({ values, exitCreatingMode }) => {
-        const newValidationErrors = validateUser(values);
+    const handleCreateEmployee = async ({ values, exitCreatingMode }) => {
+        const newValidationErrors = validateEmployee(values);
         if (Object.values(newValidationErrors).some((error) => error)) {
             setValidationErrors(newValidationErrors);
             return;
         }
         setValidationErrors({});
-        await createUser(values);
+        values.id
+        await createEmployee(values);
         exitCreatingMode();
     };
 
     //UPDATE action
-    const handleSaveUser = async ({ values, table }) => {
-        const newValidationErrors = validateUser(values);
+    const handleSaveEmployee = async ({ values, table }) => {
+        const newValidationErrors = validateEmployee(values);
         if (Object.values(newValidationErrors).some((error) => error)) {
             setValidationErrors(newValidationErrors);
             return;
         }
         setValidationErrors({});
-        await updateUser(values);
+        await updateEmployee(values);
         table.setEditingRow(null); //exit editing mode
     };
 
     //DELETE action
     const openDeleteConfirmModal = (row) =>
         modals.openConfirmModal({
-            title: 'Are you sure you want to delete this user?',
+            title: 'Are you sure you want to delete this employee?',
             children: (
                 <Text>
                     Are you sure you want to delete {row.original.firstName}{' '}
@@ -203,7 +226,7 @@ const Example = () => {
             ),
             labels: { confirm: 'Delete', cancel: 'Cancel' },
             confirmProps: { color: 'red' },
-            onConfirm: () => deleteUser(row.original.id),
+            onConfirm: () => deleteEmployee(row.original.id),
         });
 
     const table = useMantineReactTable({
@@ -213,7 +236,7 @@ const Example = () => {
         editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
         enableEditing: true,
         getRowId: (row) => row.id,
-        mantineToolbarAlertBannerProps: isLoadingUsersError
+        mantineToolbarAlertBannerProps: isLoadingEmployeesError
             ? {
                 color: 'red',
                 children: 'Error loading data',
@@ -225,27 +248,31 @@ const Example = () => {
             },
         },
         onCreatingRowCancel: () => setValidationErrors({}),
-        onCreatingRowSave: handleCreateUser,
+        onCreatingRowSave: handleCreateEmployee,
         onEditingRowCancel: () => setValidationErrors({}),
-        onEditingRowSave: handleSaveUser,
-        renderCreateRowModalContent: ({ table, row, internalEditComponents }) => (
-            <Stack>
-                <Title order={3}>Create New User</Title>
-                {internalEditComponents}
-                <Flex justify="flex-end" mt="xl">
-                    <MRT_EditActionButtons variant="text" table={table} row={row} />
-                </Flex>
-            </Stack>
-        ),
-        renderEditRowModalContent: ({ table, row, internalEditComponents }) => (
-            <Stack>
-                <Title order={3}>Edit User</Title>
-                {internalEditComponents}
-                <Flex justify="flex-end" mt="xl">
-                    <MRT_EditActionButtons variant="text" table={table} row={row} />
-                </Flex>
-            </Stack>
-        ),
+        onEditingRowSave: handleSaveEmployee,
+        renderCreateRowModalContent: ({ table, row, internalEditComponents }) => {
+            return (
+                <Stack>
+                    <Title order={3}>Create New Employee</Title>
+                    {internalEditComponents}
+                    <Flex justify="flex-end" mt="xl">
+                        <MRT_EditActionButtons variant="text" table={table} row={row} />
+                    </Flex>
+                </Stack>
+            )
+        },
+        renderEditRowModalContent: ({ table, row, internalEditComponents }) => {
+            return (
+                <Stack>
+                    <Title order={3}>Edit Employee</Title>
+                    {internalEditComponents}
+                    <Flex justify="flex-end" mt="xl">
+                        <MRT_EditActionButtons variant="text" table={table} row={row} />
+                    </Flex>
+                </Stack>
+            )
+        },
         renderRowActions: ({ row, table }) => (
             <Flex gap="md">
                 <Tooltip label="Edit">
@@ -272,45 +299,56 @@ const Example = () => {
                     // );
                 }}
             >
-                Create New User
+                Create New Employee
             </Button>
         ),
         state: {
-            isLoading: isLoadingUsers,
-            isSaving: isCreatingUser || isUpdatingUser || isDeletingUser,
-            showAlertBanner: isLoadingUsersError,
-            showProgressBars: isFetchingUsers,
+            isLoading: isLoadingEmployees,
+            isSaving: isCreatingEmployee || isUpdatingEmployee || isDeletingEmployee,
+            showAlertBanner: isLoadingEmployeesError,
+            showProgressBars: isFetchingEmployees,
         },
     });
 
     return <MantineReactTable table={table} />;
 };
 
-//CREATE hook (post new user to api)
-function useCreateUser() {
+//CREATE hook (post new employee to api)
+function useCreateEmployee() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (user) => {
-            user
-            //send api update request here
-            await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-            return Promise.resolve();
+        mutationFn: async (employee) => {
+            employee.id = 0;
+            employee.age = Number(employee.age)
+            const response = await fetch('employees/CreateEmployee', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employee),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create employee');
+            }
+
+            // If the response is successful, return the data (if any)
+            return response.json();
         },
         //client side optimistic update
-        onMutate: (newUserInfo) => {
-            queryClient.setQueryData(['users'], (prevUsers) => [
-                ...prevUsers,
+        onMutate: (newEmployeeInfo) => {
+            queryClient.setQueryData(['employees'], (prevEmployees) => [
+                ...prevEmployees,
                 {
-                    ...newUserInfo,
-                    id: (Math.random() + 1).toString(36).substring(7),
+                    ...newEmployeeInfo,
                 },
             ]);
         },
-        // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }), //refetch users after mutation, disabled for demo
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['employees'] }), //refetch employees after mutation
     });
 }
 
-//READ hook (get users from api)
+//READ hook (get employees from api)
 function useGetEmployees() {
     return useQuery({
         queryKey: ['employees'],
@@ -330,45 +368,45 @@ function useGetEmployees() {
     });
 }
 
-//UPDATE hook (put user in api)
-function useUpdateUser() {
+//UPDATE hook (put employee in api)
+function useUpdateEmployee() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (user) => {
-            user
+        mutationFn: async (employee) => {
+            employee
             //send api update request here
             await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
             return Promise.resolve();
         },
         //client side optimistic update
-        onMutate: (newUserInfo) => {
-            queryClient.setQueryData(['users'], (prevUsers) =>
-                prevUsers?.map((prevUser) =>
-                    prevUser.id === newUserInfo.id ? newUserInfo : prevUser,
+        onMutate: (newEmployeeInfo) => {
+            queryClient.setQueryData(['employees'], (prevEmployees) =>
+                prevEmployees?.map((prevEmployee) =>
+                    prevEmployee.id === newEmployeeInfo.id ? newEmployeeInfo : prevEmployee,
                 ),
             );
         },
-        // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }), //refetch users after mutation, disabled for demo
+        // onSettled: () => queryClient.invalidateQueries({ queryKey: ['employees'] }), //refetch employees after mutation, disabled for demo
     });
 }
 
-//DELETE hook (delete user in api)
-function useDeleteUser() {
+//DELETE hook (delete employee in api)
+function useDeleteEmployee() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (userId) => {
-            userId
+        mutationFn: async (employeeId) => {
+            employeeId
             //send api update request here
             await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
             return Promise.resolve();
         },
         //client side optimistic update
-        onMutate: (userId) => {
-            queryClient.setQueryData(['users'], (prevUsers) =>
-                prevUsers?.filter((user) => user.id !== userId),
+        onMutate: (employeeId) => {
+            queryClient.setQueryData(['employees'], (prevEmployees) =>
+                prevEmployees?.filter((employee) => employee.id !== employeeId),
             );
         },
-        // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }), //refetch users after mutation, disabled for demo
+        // onSettled: () => queryClient.invalidateQueries({ queryKey: ['employees'] }), //refetch employees after mutation, disabled for demo
     });
 }
 
@@ -386,20 +424,40 @@ const App = () => (
 export default App;
 
 const validateRequired = (value) => !!value.length;
-const validateEmail = (email) =>
-    !!email.length &&
-    email
-        .toLowerCase()
-        .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        );
+const validateAgeRange = (value) => value >= 18 && value <= 100;
 
-function validateUser(user) {
-    return {
-        firstName: !validateRequired(user.firstName)
-            ? 'First Name is Required'
-            : '',
-        lastName: !validateRequired(user.lastName) ? 'Last Name is Required' : '',
-        email: !validateEmail(user.email) ? 'Incorrect Email Format' : '',
+function validateEmployee(employee) {
+    const errors = {
+        firstName: '',
+        lastName: '',
+        age: '',
+        sex: ''
     };
+
+    // Validate first name
+    if (!validateRequired(employee.firstName)) {
+        errors.firstName = 'First Name is Required';
+    }
+
+    // Validate last name
+    if (!validateRequired(employee.lastName)) {
+        errors.lastName = 'Last Name is Required';
+    }
+
+    // Validate age
+    if (!validateRequired(employee.age)) {
+        errors.age = 'Age is required';
+    }
+
+    // Validate age range
+    else if (!validateAgeRange(employee.age)) {
+        errors.age = 'Age must be between 18 and 100';
+    }
+
+    /// Validate sex
+    if (!validateRequired(employee.sex)) {
+        errors.sex = 'Sex is required';
+    }
+
+    return errors;
 }
