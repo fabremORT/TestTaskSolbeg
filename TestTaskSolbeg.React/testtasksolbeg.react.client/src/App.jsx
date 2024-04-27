@@ -186,6 +186,9 @@ const Example = () => {
                 minHeight: '500px',
             },
         },
+        mantineTableProps:{
+            striped: true,
+        },
         onCreatingRowCancel: () => setValidationErrors({}),
         onCreatingRowSave: handleCreateEmployee,
         onEditingRowCancel: () => setValidationErrors({}),
@@ -418,6 +421,5 @@ function validateEmployee(employee) {
 }
 
 //TODO: multiple delete
-//TODO: scroll table
-//TODO: striped table
 //TODO: last name and first name must be displayed as a single line
+//TODO: scroll table
