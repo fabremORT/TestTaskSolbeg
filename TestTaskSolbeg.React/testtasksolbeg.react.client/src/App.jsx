@@ -1,54 +1,3 @@
-/* eslint-disable react/prop-types */
-//import { useEffect, useState } from 'react';
-//import './App.css';
-
-//function App() {
-//    const [employees, setEmployees] = useState();
-
-//    useEffect(() => {
-//        populateEmployeeData();
-//    }, []);
-
-//    const contents = employees === undefined
-//        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-//        : <table className="table table-striped" aria-labelledby="tabelLabel">
-//            <thead>
-//                <tr>
-//                    <th>Id</th>
-//                    <th>Name</th>
-//                    <th>Age</th>
-//                    <th>Sex</th>
-//                </tr>
-//            </thead>
-//            <tbody>
-//                {employees.map(employee =>
-//                    <tr key={employee.id}>
-//                        <td>{employee.id}</td>
-//                        <td>{employee.firstName} {employee.lastName}</td>
-//                        <td>{employee.age} years</td>
-//                        <td>{employee.sex}</td>
-//                    </tr>
-//                )}
-//            </tbody>
-//        </table>;
-
-//    return (
-//        <div>
-//            <h1 id="tabelLabel">Employees</h1>
-//            <p>This component demonstrates fetching data from the server.</p>
-//            {contents}
-//        </div>
-//    );
-
-//    async function populateEmployeeData() {
-//        const response = await fetch('employees/GetEmployees');
-//        const data = await response.json();
-//        setEmployees(data);
-//    }
-//}
-
-//export default App;
-
 import { useMemo, useState } from 'react';
 import {
     MRT_EditActionButtons,
@@ -226,7 +175,7 @@ const Example = () => {
             ),
             labels: { confirm: 'Delete', cancel: 'Cancel' },
             confirmProps: { color: 'red' },
-            onConfirm: () => deleteEmployee(row.original.id),
+            onConfirm: () => deleteEmployee([row.original.id]),
         });
 
     const table = useMantineReactTable({
@@ -384,7 +333,7 @@ function useUpdateEmployee() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create employee');
+                throw new Error('Failed to update employee');
             }
         },
         //client side optimistic update
@@ -403,11 +352,18 @@ function useUpdateEmployee() {
 function useDeleteEmployee() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (employeeId) => {
-            employeeId
-            //send api update request here
-            await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-            return Promise.resolve();
+        mutationFn: async (employeesIds) => {
+            const response = await fetch(`employees/deleteEmployees`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employeesIds)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete employee');
+            }
         },
         //client side optimistic update
         onMutate: (employeeId) => {
@@ -415,7 +371,7 @@ function useDeleteEmployee() {
                 prevEmployees?.filter((employee) => employee.id !== employeeId),
             );
         },
-        // onSettled: () => queryClient.invalidateQueries({ queryKey: ['employees'] }), //refetch employees after mutation, disabled for demo
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['employees'] }), //refetch employees after mutation
     });
 }
 

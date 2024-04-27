@@ -115,8 +115,9 @@ namespace TestTaskSolbeg.React.Server.Controllers
         }
 
         // DELETE: employees/DeleteEmployee/1
-        [HttpPost("DeleteEmployees")]
-        public IActionResult DeleteEmployee(IEnumerable<int> ids)
+        [HttpPost]
+        [Route("DeleteEmployees")]
+        public IActionResult DeleteEmployee([FromBody] IEnumerable<int> ids)
         {
             _deleteEmployees.Execute(ids);
 
