@@ -7,6 +7,7 @@ import {
 } from 'material-react-table';
 import {
     Text,
+    Group
 } from '@mantine/core';
 import {
     Box,
@@ -186,18 +187,34 @@ const Example = () => {
     };
 
     //DELETE action
-    const openDeleteConfirmModal = (row) =>
+    const openDeleteConfirmModal = (rows) =>
         modals.openConfirmModal({
-            title: 'Are you sure you want to delete this employee?',
+            title: rows.length == 1 ? 'Are you sure you want to delete this employee?' : '',
             children: (
-                <Text>
-                    Are you sure you want to delete {row.original.firstName}{' '}
-                    {row.original.lastName}? This action cannot be undone.
-                </Text>
-            ),
+                <>
+                    {
+                        rows.length == 1 && 
+                        <Text>
+                            Are you sure you want to delete {rows[0].original.firstName}{' '}
+                            {rows[0].original.lastName}? This action cannot be undone.
+                        </Text>
+                    }
+                    {
+                        rows.length > 1 &&
+                        <Text>
+                            Are you sure you want to delete {rows.length} employees? This action cannot be undone.
+                        </Text>
+                    }
+                    
+                </>
+            )
+            ,
             labels: { confirm: 'Delete', cancel: 'Cancel' },
             confirmProps: { color: 'red' },
-            onConfirm: () => deleteEmployee([row.original.id]),
+            onConfirm: () => {
+                const employeesIds = rows.map(r => r.id)
+                deleteEmployee(employeesIds)
+            },
         });
 
     const table = useMaterialReactTable({
@@ -206,6 +223,7 @@ const Example = () => {
         createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
         editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
         enableEditing: true,
+        enableRowSelection: true,
         getRowId: (row) => row.id,
         initialState: {
             columnVisibility: {
@@ -213,6 +231,7 @@ const Example = () => {
                 lastName: false
             }
         },
+        positionActionsColumn: 'last',
         muiToolbarAlertBannerProps: isLoadingEmployeesError
             ? {
                 color: 'error',
@@ -278,28 +297,42 @@ const Example = () => {
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Delete">
-                    <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
+                    <IconButton color="error" onClick={() => openDeleteConfirmModal([row])}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
             </Box>
         ),
-        renderTopToolbarCustomActions: ({ table }) => (
-            <Button
-                variant="contained"
-                onClick={() => {
-                    table.setCreatingRow(true); //simplest way to open the create row modal with no default values
-                    //or you can pass in a row object to set default values with the `createRow` helper function
-                    // table.setCreatingRow(
-                    //   createRow(table, {
-                    //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
-                    //   }),
-                    // );
-                }}
-            >
-                Create New Employee
-            </Button>
-        ),
+        renderTopToolbarCustomActions: ({ table }) => {
+            console.log(table.getState().rowSelection);
+            console.log(table.getSelectedRowModel().rows);
+            return (
+                <Group>
+                    <Button
+                        variant="contained"
+                        onClick={() => {
+                            table.setCreatingRow(true); 
+                        }}
+                    >
+                        Create New Employee
+                        </Button>
+                    {table.getSelectedRowModel().rows.length > 0 &&
+                        <Tooltip title="Delete Selected Employees">
+                            <IconButton color="error" onClick={() => openDeleteConfirmModal(table.getSelectedRowModel().rows)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    }
+                </Group>
+            )
+        },
+        //renderToolbarAlertBannerContent: ({ table }) => (
+        //    <Tooltip title="Delete Selected Employees">
+        //        <IconButton color="error" onClick={() => openDeleteConfirmModal(table.getSelectedRowModel().rows)}>
+        //            <DeleteIcon />
+        //        </IconButton>
+        //    </Tooltip>
+        //),
         state: {
             isLoading: isLoadingEmployees,
             isSaving: isCreatingEmployee || isUpdatingEmployee || isDeletingEmployee,
