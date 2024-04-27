@@ -189,6 +189,11 @@ const Example = () => {
         mantineTableProps:{
             striped: true,
         },
+        autoResetPageIndex: false,
+        mantinePaginationProps: {
+            defaultValue: 10,
+            rowsPerPageOptions: ['10', '20'],
+        },
         onCreatingRowCancel: () => setValidationErrors({}),
         onCreatingRowSave: handleCreateEmployee,
         onEditingRowCancel: () => setValidationErrors({}),
@@ -422,4 +427,3 @@ function validateEmployee(employee) {
 
 //TODO: multiple delete
 //TODO: last name and first name must be displayed as a single line
-//TODO: scroll table
