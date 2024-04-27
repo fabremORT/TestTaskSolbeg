@@ -1,21 +1,25 @@
 import { useMemo, useState } from 'react';
 import {
     MRT_EditActionButtons,
-    MantineReactTable,
+    MaterialReactTable,
     // createRow,
-    useMantineReactTable,
-} from 'mantine-react-table';
+    useMaterialReactTable,
+} from 'material-react-table';
 import {
-    ActionIcon,
-    Button,
-    Flex,
-    Stack,
     Text,
-    Title,
-    Tooltip,
 } from '@mantine/core';
+import {
+    Box,
+    Button,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    Tooltip,
+} from '@mui/material';
 import { ModalsProvider, modals } from '@mantine/modals';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
     QueryClient,
     QueryClientProvider,
@@ -34,14 +38,34 @@ const Example = () => {
                 header: 'Id',
                 enableEditing: false,
                 size: 80,
+                Edit: () => null
+            },
+            {
+                accessorKey: 'fullName',
+                header: 'Full Name',
+                enableEditing: false,
+                Cell: ({ row }) => {
+                    return (
+                        <>
+                            {row.original.firstName} {row.original.lastName}
+                        </>
+                    )
+                },
+                Edit: () => null,
+                muiEditTextFieldProps: {
+                    type: 'text',
+                },
             },
             {
                 accessorKey: 'firstName',
                 header: 'First Name',
-                mantineEditTextInputProps: {
+                enableHiding: false,
+                visibleInShowHideMenu: false,
+                muiEditTextFieldProps: {
                     type: 'text',
                     required: true,
                     error: validationErrors?.firstName,
+                    helperText: validationErrors?.firstName,
                     //remove any previous validation errors when employee focuses on the input
                     onFocus: () =>
                         setValidationErrors({
@@ -54,10 +78,13 @@ const Example = () => {
             {
                 accessorKey: 'lastName',
                 header: 'Last Name',
-                mantineEditTextInputProps: {
+                enableHiding: false,
+                visibleInShowHideMenu: false,
+                muiEditTextFieldProps: {
                     type: 'text',
                     required: true,
                     error: validationErrors?.lastName,
+                    helperText: validationErrors?.lastName,
                     //remove any previous validation errors when employee focuses on the input
                     onFocus: () =>
                         setValidationErrors({
@@ -75,10 +102,11 @@ const Example = () => {
                     </>
                 )
                 ,
-                mantineEditTextInputProps: {
+                muiEditTextFieldProps: {
                     type: 'number',
                     required: true,
                     error: validationErrors?.age,
+                    helperText: validationErrors?.age,
                     //remove any previous validation errors when employee focuses on the input
                     onFocus: () =>
                         setValidationErrors({
@@ -91,11 +119,16 @@ const Example = () => {
                 accessorKey: 'sex',
                 header: 'Sex',
                 editVariant: 'select',
-                mantineEditSelectProps: {
+                editSelectOptions: [
+                    { value: 'Male', label: 'Male' },
+                    { value: 'Female', label: 'Female' },
+                ],
+                muiEditTextFieldProps: {
                     type: 'select',
                     required: true,
                     error: validationErrors?.sex,
-                    data:[
+                    helperText: validationErrors?.sex,
+                    data: [
                         { value: 'Male', label: 'Male' },
                         { value: 'Female', label: 'Female' },
                     ],
@@ -136,7 +169,6 @@ const Example = () => {
             return;
         }
         setValidationErrors({});
-        values.id
         await createEmployee(values);
         exitCreatingMode();
     };
@@ -168,74 +200,93 @@ const Example = () => {
             onConfirm: () => deleteEmployee([row.original.id]),
         });
 
-    const table = useMantineReactTable({
+    const table = useMaterialReactTable({
         columns,
         data: fetchedEmployees,
         createDisplayMode: 'modal', //default ('row', and 'custom' are also available)
         editDisplayMode: 'modal', //default ('row', 'cell', 'table', and 'custom' are also available)
         enableEditing: true,
         getRowId: (row) => row.id,
-        mantineToolbarAlertBannerProps: isLoadingEmployeesError
+        initialState: {
+            columnVisibility: {
+                firstName: false,
+                lastName: false
+            }
+        },
+        muiToolbarAlertBannerProps: isLoadingEmployeesError
             ? {
-                color: 'red',
+                color: 'error',
                 children: 'Error loading data',
             }
             : undefined,
-        mantineTableContainerProps: {
+        muiTableContainerProps: {
             sx: {
                 minHeight: '500px',
             },
         },
-        mantineTableProps:{
-            striped: true,
+        muiTableBodyProps: {
+            sx: {
+                //stripe the rows, make odd rows a darker color
+                '& tr:nth-of-type(odd) > td': {
+                    backgroundColor: '#f5f5f5',
+                },
+            },
         },
         autoResetPageIndex: false,
-        mantinePaginationProps: {
-            defaultValue: 10,
-            rowsPerPageOptions: ['10', '20'],
+        muiPaginationProps: {
+            rowsPerPageOptions: [5, 10, 20],
         },
         onCreatingRowCancel: () => setValidationErrors({}),
         onCreatingRowSave: handleCreateEmployee,
         onEditingRowCancel: () => setValidationErrors({}),
         onEditingRowSave: handleSaveEmployee,
-        renderCreateRowModalContent: ({ table, row, internalEditComponents }) => {
+        renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => {
             return (
-                <Stack>
-                    <Title order={3}>Create New Employee</Title>
-                    {internalEditComponents}
-                    <Flex justify="flex-end" mt="xl">
+                <>
+                    <DialogTitle variant="h3">Create New Employee</DialogTitle>
+                    <DialogContent
+                        sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                    >
+                        {internalEditComponents} {/* or render custom edit components here */}
+                    </DialogContent>
+                    <DialogActions>
                         <MRT_EditActionButtons variant="text" table={table} row={row} />
-                    </Flex>
-                </Stack>
+                    </DialogActions>
+                </>
             )
         },
-        renderEditRowModalContent: ({ table, row, internalEditComponents }) => {
+        renderEditRowDialogContent: ({ table, row, internalEditComponents }) => {
             return (
-                <Stack>
-                    <Title order={3}>Edit Employee</Title>
-                    {internalEditComponents}
-                    <Flex justify="flex-end" mt="xl">
+                <>
+                    <DialogTitle variant="h3">Edit Employee</DialogTitle>
+                    <DialogContent
+                        sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
+                    >
+                        {internalEditComponents} {/* or render custom edit components here */}
+                    </DialogContent>
+                    <DialogActions>
                         <MRT_EditActionButtons variant="text" table={table} row={row} />
-                    </Flex>
-                </Stack>
+                    </DialogActions>
+                </>
             )
         },
         renderRowActions: ({ row, table }) => (
-            <Flex gap="md">
-                <Tooltip label="Edit">
-                    <ActionIcon onClick={() => table.setEditingRow(row)}>
-                        <IconEdit />
-                    </ActionIcon>
+            <Box sx={{ display: 'flex', gap: '1rem' }}>
+                <Tooltip title="Edit">
+                    <IconButton onClick={() => table.setEditingRow(row)}>
+                        <EditIcon />
+                    </IconButton>
                 </Tooltip>
-                <Tooltip label="Delete">
-                    <ActionIcon color="red" onClick={() => openDeleteConfirmModal(row)}>
-                        <IconTrash />
-                    </ActionIcon>
+                <Tooltip title="Delete">
+                    <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
+                        <DeleteIcon />
+                    </IconButton>
                 </Tooltip>
-            </Flex>
+            </Box>
         ),
         renderTopToolbarCustomActions: ({ table }) => (
             <Button
+                variant="contained"
                 onClick={() => {
                     table.setCreatingRow(true); //simplest way to open the create row modal with no default values
                     //or you can pass in a row object to set default values with the `createRow` helper function
@@ -257,7 +308,7 @@ const Example = () => {
         },
     });
 
-    return <MantineReactTable table={table} />;
+    return <MaterialReactTable table={table} />;
 };
 
 //CREATE hook (post new employee to api)
@@ -426,4 +477,3 @@ function validateEmployee(employee) {
 }
 
 //TODO: multiple delete
-//TODO: last name and first name must be displayed as a single line
