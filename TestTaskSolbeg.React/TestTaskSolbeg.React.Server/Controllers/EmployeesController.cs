@@ -28,17 +28,17 @@ namespace TestTaskSolbeg.React.Server.Controllers
         // GET: employees/GetEmployees
         [HttpGet]
         [Route("GetEmployees")]
-        public IEnumerable<Employee> GetEmployees()
+        public IActionResult GetEmployees()
         {
             try
             {
                 var allEmployees = _getAllEmployees.Execute();
 
-                return allEmployees;
+                return Ok(allEmployees);
             }
             catch (Exception ex)
             {
-                return _getAllEmployees.Execute();
+                return StatusCode(500, "An error occurred while fetching employees: " + ex.Message);
             }
         }
 
@@ -113,16 +113,9 @@ namespace TestTaskSolbeg.React.Server.Controllers
         }
 
         // DELETE: employees/DeleteEmployee/1
-        [HttpDelete("DeleteEmployee/{id}")]
+        [HttpPost("DeleteEmployees")]
         public IActionResult DeleteEmployee(IEnumerable<int> ids)
         {
-            //var employee = _employees.FirstOrDefault(e => e.Id == id);
-
-            //if (employee == null)
-            //{
-            //    return NotFound();
-            //}
-
             _deleteEmployees.Execute(ids);
 
             return NoContent();

@@ -14,8 +14,6 @@ namespace TestTaskSolbeg.EntityFramework.Repositories
 
         public void Create(Employee entity)
         {
-            entity.Validate();
-
             Employee? employee = _dbContext.Employees.FirstOrDefault(e => e.Equals(entity));
 
             if (employee != null) {
@@ -36,8 +34,6 @@ namespace TestTaskSolbeg.EntityFramework.Repositories
 
         public void Edit(Employee entity)
         {
-            entity.Validate();
-
             Employee? employee = _dbContext.Employees.FirstOrDefault(e => e.Equals(entity));
 
             if (employee == null)

@@ -4,7 +4,7 @@ using TestTaskSolbeg.Entities.Interfaces.Validation;
 
 namespace TestTaskSolbeg.Entities.Entities
 {
-    public class Employee : IValidable, IEquatable<Employee>
+    public class Employee : IEquatable<Employee>
     {
         public int Id { get; set; }
         [Required]
@@ -24,11 +24,6 @@ namespace TestTaskSolbeg.Entities.Entities
                 throw new ArgumentNullException($"The argument for comparing an {this.GetType()} cannot be null");
 
             return FirstName.Equals(other.FirstName) && LastName.Equals(other.LastName) && Sex.Equals(other.Sex);
-        }
-
-        public void Validate()
-        {
-            throw new NotImplementedException();
         }
     }
 }

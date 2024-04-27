@@ -15,7 +15,7 @@ namespace TestTaskSolbeg.UseCases.UseCases.Employees
 
         public void Execute(Employee employee)
         {
-            _employeeRepository.Create(employee);
+            _employeeRepository.Edit(employee);
         }
     }
 }
