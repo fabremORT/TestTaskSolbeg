@@ -28,6 +28,7 @@ import {
     useQuery,
     useQueryClient,
 } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 const Example = () => {
     const [validationErrors, setValidationErrors] = useState({});
@@ -296,11 +297,14 @@ const Example = () => {
                         <EditIcon />
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Delete">
-                    <IconButton color="error" onClick={() => openDeleteConfirmModal([row])}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                {
+                    table.getSelectedRowModel().rows.length == 0 &&
+                    <Tooltip title="Delete">
+                        <IconButton color="error" onClick={() => openDeleteConfirmModal([row])}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                }
             </Box>
         ),
         renderTopToolbarCustomActions: ({ table }) => {
@@ -326,13 +330,6 @@ const Example = () => {
                 </Group>
             )
         },
-        //renderToolbarAlertBannerContent: ({ table }) => (
-        //    <Tooltip title="Delete Selected Employees">
-        //        <IconButton color="error" onClick={() => openDeleteConfirmModal(table.getSelectedRowModel().rows)}>
-        //            <DeleteIcon />
-        //        </IconButton>
-        //    </Tooltip>
-        //),
         state: {
             isLoading: isLoadingEmployees,
             isSaving: isCreatingEmployee || isUpdatingEmployee || isDeletingEmployee,
@@ -360,7 +357,11 @@ function useCreateEmployee() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create employee');
+                response.body
+                toast.error('Error creating the employee');
+            }
+            else if (response.ok) {
+                toast.success('Employee created');
             }
 
             // If the response is successful, return the data (if any)
@@ -415,7 +416,11 @@ function useUpdateEmployee() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update employee');
+                response.body
+                toast.error('Error updating the employee');
+            }
+            else if (response.ok) {
+                toast.success('Employee updated');
             }
         },
         //client side optimistic update
@@ -444,7 +449,11 @@ function useDeleteEmployee() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to delete employee');
+                response.body
+                toast.error('Error deleting the employee(s)');
+            }
+            else if (response.ok) {
+                toast.success('Employee(s) deleted');
             }
         },
         //client side optimistic update
