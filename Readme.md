@@ -1,6 +1,6 @@
 # Project Name Setup Guide
 
-This guide will help you set up the development environment for the Project Name project.
+This guide will help you set up the development environment for this project.
 
 ## Prerequisites
 
